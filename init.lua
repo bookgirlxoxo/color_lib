@@ -156,11 +156,3 @@ function C.render_minecraft_hex_text(raw, opts)
     return table.concat(out), input, nil, visible_trimmed
 end
 
-function C.describe()
-    return table.concat({
-        "Adds HEX colouring to chat-style text tokens.",
-        "Supported tokens: &#RRGGBB, &#RRGGBB;, <&#RRGGBB>, <&#RRGGBB;>, and plain #RRGGBB for parsing.",
-        "API: read_hex_token, parse_minecraft_hex_color, strip_minecraft_hex_tokens, render_minecraft_hex_text.",
-    }, "\n")
-end
-
