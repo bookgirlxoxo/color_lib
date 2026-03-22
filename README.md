@@ -1,28 +1,27 @@
 # color_lib
 
-Shared HEX color token parsing and rendering for mods.
+Shared color token parsing and rendering for mods, including Minecraft Bukkit color coding.
 
-Supported tokens:
-- `&#RRGGBB`
-- `&#RRGGBB;`
-- `<&#RRGGBB>`
-- `<&#RRGGBB;>`
+Primary supported tokens:
+- `&0`..`&9`, `&a`..`&f`, `&r` (Bukkit/Minecraft legacy)
+- section-sign form: `\u00A70`..`\u00A79`, `\u00A7a`..`\u00A7f`, `\u00A7r`
 
-## Global API
-- `color_lib.read_hex_token(input, index, opts)`
-- `color_lib.parse_minecraft_hex_color(raw, opts)`
-- `color_lib.strip_minecraft_hex_tokens(raw, opts)`
+Also available (advanced): HEX token rendering (`&#RRGGBB`, `&#RRGGBB;`, `<&#RRGGBB>`, `<&#RRGGBB;>`).
+
+## Main APIs
+- `color_lib.render_bukkit_text(raw, opts)`
 - `color_lib.render_minecraft_hex_text(raw, opts)`
 
-## Chat Example
+Returns: `rendered, stored, err, visible`
+
+## Bukkit Example
 ```lua
 local C = rawget(_G, "color_lib")
 
-local raw = "&#7DF9FF[Server] &#FFFFFFWelcome to the server!"
-local rendered, stored, err, visible = C.render_minecraft_hex_text(raw, {
-    trim = true,
+local raw = "&dHello &fworld"
+local rendered, _, err = C.render_bukkit_text(raw, {
+    trim = false,
     allow_newlines = false,
-    max_visible = 120,
     append_white = true,
 })
 
@@ -30,23 +29,23 @@ if err then
     minetest.chat_send_player(name, minetest.colorize("#ff7777", err))
     return
 end
+minetest.chat_send_player(name, rendered)
 ```
 
-## Render Example
+## HEX Example
 ```lua
 local C = rawget(_G, "color_lib")
 
-local function render_or_error(player_name, raw, max_visible)
-    if not C then
-        return nil, "color_lib unavailable"
-    end
-    local rendered, _, err = C.render_minecraft_hex_text(raw, {
-        max_visible = max_visible or 80,
-        append_white = true,
-    })
-    if err then
-        return nil, err
-    end
-    return rendered, nil
+local raw = "&#7DF9FF[Server] &#FFFFFFWelcome!"
+local rendered, _, err = C.render_minecraft_hex_text(raw, {
+    trim = false,
+    allow_newlines = false,
+    append_white = true,
+})
+
+if err then
+    minetest.chat_send_player(name, minetest.colorize("#ff7777", err))
+    return
 end
+minetest.chat_send_player(name, rendered)
 ```
